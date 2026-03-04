@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinanceOS — Gestionnaire Financier</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!--  SIDEBAR  -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <span class="brand-mark"></span>
+    <span class="brand-text">FinanceAret</span>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-item active" data-view="dashboard">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span>Tableau de bord</span>
+    </a>
+    <a href="#" class="nav-item" data-view="transactions">
+      <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      <span>Transactions</span>
+    </a>
+    <a href="#" class="nav-item" data-view="analytics">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span>Analytique</span>
+    </a>
+    <a href="#" class="nav-item" data-view="add">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <span>Nouvelle entrée</span>
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="btn-export" id="btnExport">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Exporter CSV
+    </button>
+  </div>
+</aside>
+
+<!--  MAIN  -->
+<main class="main">
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+      <h1 class="page-title" id="pageTitle">Tableau de bord</h1>
+    </div>
+    <div class="topbar-right">
+      <div class="balance-chip" id="balanceChip">
+        <span class="chip-label">Solde</span>
+        <span class="chip-value" id="chipBalance">0,00 €</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Alert bar -->
+  <div class="alert-bar" id="alertBar" style="display:none">
+    <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span id="alertText">Attention : votre solde est négatif !</span>
+  </div>
+
+  <!--  
+       VIEW : DASHBOARD
+    -->
+  <section class="view active" id="view-dashboard">
+
+    <!-- KPI cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-balance">
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-label">Solde disponible</span>
+          <span class="kpi-value" id="kpiBalance">0,00 €</span>
+        </div>
+      </div>
+      <div class="kpi-card kpi-income">
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-label">Total revenus</span>
+          <span class="kpi-value" id="kpiIncome">0,00 €</span>
+        </div>
+      </div>
+      <div class="kpi-card kpi-expense">
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-label">Total dépenses</span>
+          <span class="kpi-value" id="kpiExpense">0,00 €</span>
+        </div>
+      </div>
+      <div class="kpi-card kpi-avg">
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-label">Moy. dépenses/mois</span>
+          <span class="kpi-value" id="kpiAvg">0,00 €</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts row -->
+    <div class="charts-row">
+      <div class="chart-card chart-pie-card">
+        <div class="card-header">
+          <span class="card-title">Répartition des dépenses</span>
+          <span class="card-sub" id="pieSubtitle">par catégorie</span>
+        </div>
+        <div class="pie-container">
+          <svg id="pieChart" viewBox="0 0 200 200" class="pie-svg"></svg>
+          <div class="pie-legend" id="pieLegend"></div>
+        </div>
+        <div class="empty-state" id="pieEmpty">Aucune dépense enregistrée</div>
+      </div>
+
+      <div class="chart-card chart-bar-card">
+        <div class="card-header">
+          <span class="card-title">Évolution du solde</span>
+          <span class="card-sub">6 derniers mois</span>
+        </div>
+        <div class="bar-chart-wrap">
+          <svg id="barChart" class="bar-svg" viewBox="0 0 420 180" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+        <div class="empty-state" id="barEmpty">Aucune donnée disponible</div>
+      </div>
+    </div>
+
+    <!-- Recent transactions -->
+    <div class="recent-card">
+      <div class="card-header">
+        <span class="card-title">Transactions récentes</span>
+        <a href="#" class="card-link" data-view="transactions">Voir tout →</a>
+      </div>
+      <div id="recentList" class="tx-list"></div>
+      <div class="empty-state" id="recentEmpty">Aucune transaction pour l'instant</div>
+    </div>
+
+  </section>
+
+  <!--  
+       VIEW : TRANSACTIONS
+    -->
+  <section class="view" id="view-transactions">
+
+    <div class="tx-toolbar">
+      <div class="filter-group">
+        <select class="filter-select" id="filterType">
+          <option value="">Tous les types</option>
+          <option value="revenu">Revenus</option>
+          <option value="depense">Dépenses</option>
+        </select>
+        <select class="filter-select" id="filterCat">
+          <option value="">Toutes catégories</option>
+        </select>
+        <input type="month" class="filter-select" id="filterMonth" />
+        <button class="btn-ghost" id="btnResetFilters">Réinitialiser</button>
+      </div>
+      <span class="tx-count" id="txCount">0 transaction(s)</span>
+    </div>
+
+    <div class="tx-table-wrap">
+      <table class="tx-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Catégorie</th>
+            <th>Type</th>
+            <th class="text-right">Montant</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="txTableBody"></tbody>
+      </table>
+      <div class="empty-state" id="txEmpty">Aucune transaction trouvée</div>
+    </div>
+
+    <!-- Comparison table -->
+    <div class="compare-card">
+      <div class="card-header">
+        <span class="card-title">Comparatif par période</span>
+      </div>
+      <div id="compareTable" class="compare-table-wrap"></div>
+    </div>
+
+  </section>
+
+  <!--  
+       VIEW : ANALYTICS
+    -->
+  <section class="view" id="view-analytics">
+
+    <div class="analytics-grid">
+
+      <div class="chart-card full-width">
+        <div class="card-header">
+          <span class="card-title">Histogramme Revenus vs Dépenses</span>
+          <div class="period-tabs">
+            <button class="ptab active" data-period="monthly">Mensuel</button>
+            <button class="ptab" data-period="weekly">Hebdo</button>
+          </div>
+        </div>
+        <div class="grouped-bar-wrap">
+          <svg id="groupedBar" class="grouped-svg" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+        <div class="empty-state" id="groupedEmpty">Aucune donnée disponible</div>
+      </div>
+
+      <div class="stats-card">
+        <div class="card-header">
+          <span class="card-title">Statistiques détaillées</span>
+        </div>
+        <div id="statsBody" class="stats-body"></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="card-header">
+          <span class="card-title">Top dépenses</span>
+        </div>
+        <div id="topExpenses" class="top-expenses-list"></div>
+        <div class="empty-state" id="topEmpty">Aucune dépense enregistrée</div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!--  
+       VIEW : ADD / EDIT
+    -->
+  <section class="view" id="view-add">
+
+    <div class="form-container">
+      <div class="form-card">
+        <div class="form-header">
+          <h2 class="form-title" id="formTitle">Nouvelle transaction</h2>
+          <p class="form-sub">Renseignez les informations de votre transaction</p>
+        </div>
+
+        <form id="txForm" novalidate>
+          <input type="hidden" id="editId" value="" />
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="fDesc">Description <span class="req">*</span></label>
+              <input type="text" id="fDesc" class="form-input" placeholder="Ex : Salaire octobre" maxlength="100" />
+              <span class="form-error" id="errDesc"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fAmount">Montant (FCFA) <span class="req">*</span></label>
+              <input type="number" id="fAmount" class="form-input" placeholder="0.00" min="0.01" step="0.01" />
+              <span class="form-error" id="errAmount"></span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Type <span class="req">*</span></label>
+              <div class="type-toggle">
+                <button type="button" class="type-btn active" data-type="revenu">
+                  <svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                  Revenu
+                </button>
+                <button type="button" class="type-btn" data-type="depense">
+                  <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+                  Dépense
+                </button>
+              </div>
+              <span class="form-error" id="errType"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fCategory">Catégorie <span class="req">*</span></label>
+              <select id="fCategory" class="form-input form-select">
+                <option value="">-- Sélectionner --</option>
+              </select>
+              <span class="form-error" id="errCategory"></span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="fDate">Date <span class="req">*</span></label>
+              <input type="date" id="fDate" class="form-input" />
+              <span class="form-error" id="errDate"></span>
+            </div>
+            <div class="form-group form-group-empty"></div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-ghost" id="btnCancelEdit" style="display:none">Annuler</button>
+            <button type="submit" class="btn-primary" id="btnSubmit">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Enregistrer
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- ─── MODAL CONFIRM DELETE   -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-icon">
+      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+    </div>
+    <h3 class="modal-title">Supprimer la transaction ?</h3>
+    <p class="modal-body">Cette action est irréversible.</p>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="modalCancel">Annuler</button>
+      <button class="btn-danger" id="modalConfirm">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOAST   -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
